@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: myapp_test
+    networks:
+      - test-network
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: secret
+      DB_NAME: myapp_test
+      PORT: 8080
+    depends_on:
+      - postgres
+    networks:
+      - test-network
+
+  nginx:
+    image: local-nginx-test:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - test-network
+
+networks:
+  test-network:

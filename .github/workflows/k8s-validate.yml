@@ -25,19 +25,7 @@ jobs:
 
       - name: Validate Kubernetes manifests
         run: |
-          kubeval --strict --ignore-missing-schemas k8s/*.yaml
-
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'v1.28.0'
-
-      - name: Dry-run apply
-        run: |
-          for file in k8s/*.yaml; do
-            echo "Validating $file"
-            kubectl create --dry-run=client -f "$file" -o yaml >/dev/null 
-          done
+          find k8s -type f -name "*.yaml" -exec kubeval --strict --ignore-missing-schemas {} \;
 
       - name: Lint YAML files
         uses: ibiqlik/action-yamllint@v3

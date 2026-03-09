@@ -36,7 +36,7 @@ jobs:
         run: |
           for file in k8s/*.yaml; do
             echo "Validating $file"
-            kubectl apply --dry-run=client --validate=false -f "$file"
+            kubectl create --dry-run=client -f "$file" -o yaml >/dev/null 
           done
 
       - name: Lint YAML files
